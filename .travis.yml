@@ -1,0 +1,15 @@
+#need to add this line.
+language: generic
+#have to have super user access
+sudo: required
+# need docker running in travis!
+services:
+  - docker
+#series of setup before deployment, or run tests.
+before_install:
+  #tell it to build image from dockerfile.dev.
+  #put a tag so we can get the id can call it anything we want.
+  - docker build -t drakefish/docker-react -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true drakefish/docker-react npm run test
