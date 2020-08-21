@@ -13,3 +13,28 @@ before_install:
 
 script:
   - docker run -e CI=true drakefish/docker-react npm run test
+
+deploy:
+  #travis CI comes preconfigured to deploy to this.
+  provider: elasticbeanstalk
+  #where we originally created our elasticbeanstalk instance.
+  #go to dashboard and look at url
+  region: "us-east-1"
+  #same name we created on elastic beanstalk dashboard.
+  app: "docker-app"
+  #can also get this from the dashboard
+  env: "DockerApp-env"
+  #it's going to copy all file to s3, and tell elastic beanstalk to deploy from that zip file.
+  bucket_name: "elasticbeanstalk-us-east-1-168298476102"
+  #exact name as the app name.
+  bucket_path: "docker-app"
+  #only deploy when master branch gets new code.
+  on:
+    branch: master
+  #generate api keys in aws console. Search for IAM > Add User > provide user name > add existing policies >
+  # ability to deploy app to elasticbeanstalk. AWSElasticBeanstalkFullAccess
+  # get access key and secret access key. Don't lose them!
+  # put keys in environment secrets. Travis dashboard > more options > settings > environment variables >
+  # stash keys here.
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
